@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="title"></title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #121212; color: white; text-align: center; }
+        .header { background: #ffcc00; padding: 15px; font-size: 24px; font-weight: bold; color: black; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .telegram-icon { width: 24px; height: 24px; }
+        .container { padding: 20px; }
+        .game-box {
+            background: #1a1a1a; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            max-width: 400px; margin: 20px auto;
+        }
+        .game-title { font-size: 22px; font-weight: bold; color: #ffcc00; margin-bottom: 10px; }
+        .info { font-size: 18px; margin: 10px 0; }
+        .timer { color: red; font-weight: bold; font-size: 20px; }
+        .result { font-size: 28px; font-weight: bold; margin-top: 10px; text-transform: uppercase; }
+        .big { color: #00ffcc; }
+        .small { color: #ff0066; }
+        .play-btn {
+            display: inline-block; padding: 12px 25px; background: #ffcc00;
+            color: black; font-size: 18px; border-radius: 5px; text-decoration: none;
+            font-weight: bold; margin-top: 15px; transition: 0.3s;
+        }
+        .play-btn:hover { background: #ff9900; }
+        .footer { margin-top: 30px; font-size: 14px; color: #bbb; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" class="telegram-icon" alt="Telegram">
+        <span id="headerText"></span>
+    </div>
+
+    <div class="container">
+        <div class="game-box">
+            <div class="game-title" id="gameTitle"></div>
+            <div class="info">Period Number: <span id="periodNumber">Loading...</span></div>
+            <div class="info">Timer: <span class="timer" id="timerText">00:00</span></div>
+            <div class="result" id="resultText">WAIT...</div>
+            <a id="playNowLink" class="play-btn" target="_blank"></a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <span id="telegramLink" style="color: #ffcc00; font-weight: bold;"></span>
+    </div>
+
+    <script>
+        function decryptText(encodedText) {
+            return atob(encodedText);
+        }
+
+        document.getElementById("headerText").innerText = decryptText("QVBLTU9EREVSS0lORw=="); // "APKMODDERKING"
+        document.getElementById("gameTitle").innerText = decryptText("VElSQU5HQSAgUHJlZGljdG9y"); // "TIRANGA PREDICTOR"
+        document.getElementById("title").innerText = decryptText("VElSQU5HQSBQUkVESUNUT1I="); // "TIRANGA PREDICTOR"
+
+        let encryptedLink = "aHR0cHM6Ly93d3cudGlyYW5nYWdhbWUudG9wLyMvcmVnaXN0ZXI/aW52aXRhdGlvbkNvZGU9MzU3ODExMzEzMzY3";
+        let playNowElement = document.getElementById("playNowLink");
+        playNowElement.href = decryptText(encryptedLink);
+        playNowElement.innerText = "Play Now";
+
+        let telegramEncrypted = "aHR0cHM6Ly90ZWxlZ3JhbS5tZS9hcGttb2RkZXJraW5n";
+        let telegramElement = document.getElementById("telegramLink");
+        telegramElement.innerText = decryptText(telegramEncrypted);
+
+        let lastPrediction = "WAIT...";
+        let lastPeriod = "";
+
+        function updatePeriodAndTimer() {
+            let now = new Date();
+            let year = now.getFullYear();
+            let month = String(now.getMonth() + 1).padStart(2, '0');
+            let day = String(now.getDate()).padStart(2, '0');
+            let hours = String(now.getHours()).padStart(2, '0');
+            let minutes = String(now.getMinutes()).padStart(2, '0');
+
+            let periodNum = `${year}${month}${day}${hours}${minutes}`;
+            document.getElementById("periodNumber").innerText = periodNum;
+
+            let seconds = now.getSeconds();
+            let remainingSeconds = 60 - seconds;
+            document.getElementById("timerText").innerText = `00:${String(remainingSeconds).padStart(2, '0')}`;
+
+            if (remainingSeconds === 59 || lastPeriod !== periodNum) {
+                generateNewPrediction();
+                lastPeriod = periodNum;
+            }
+
+            document.getElementById("resultText").innerText = lastPrediction;
+            document.getElementById("resultText").className = `result ${lastPrediction === "BIG" ? "big" : "small"}`;
+        }
+
+        function generateNewPrediction() {
+            let randomNum = Math.floor(Math.random() * 99) + 1;
+            let sum = [...String(randomNum)].reduce((a, b) => a + parseInt(b), 0);
+            if (sum > 9) sum = [...String(sum)].reduce((a, b) => a + parseInt(b), 0);
+
+            lastPrediction = sum >= 5 ? "BIG" : "SMALL";
+        }
+
+        setInterval(updatePeriodAndTimer, 1000);
+        updatePeriodAndTimer();
+    </script>
+
+</body>
+</html>
